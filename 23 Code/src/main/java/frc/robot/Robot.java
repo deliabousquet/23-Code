@@ -4,6 +4,7 @@
 
 
 //coding is hard
+//test 1
 
 package frc.robot;
 
@@ -336,8 +337,7 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
       wristMotor.set(pid_loop_value);
       System.out.println("PID output =" + pid_loop_value);
       System.out.println("sensor=" + encoder.get());
-      //adding a comment hello
-      //another comment
+    
       
     }
 
