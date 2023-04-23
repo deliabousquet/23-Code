@@ -336,8 +336,8 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
       wristMotor.set(pid_loop_value);
       System.out.println("PID output =" + pid_loop_value);
       System.out.println("sensor=" + encoder.get());
-      System.out.println("hello world");
-      System.out.println("does this branch work?");
+      //adding a comment hello
+      
     }
 
 
