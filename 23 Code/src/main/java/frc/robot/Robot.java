@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 
-
+//coding is hard
 
 package frc.robot;
 
@@ -337,6 +337,7 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
       System.out.println("PID output =" + pid_loop_value);
       System.out.println("sensor=" + encoder.get());
       //adding a comment hello
+      //another comment
       
     }
 
