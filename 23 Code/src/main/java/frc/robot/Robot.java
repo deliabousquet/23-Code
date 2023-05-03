@@ -95,12 +95,6 @@ private final DoubleSolenoid solenoid = new DoubleSolenoid(null, 0, 1);
     
     buttonPressed = false;
     CameraServer.startAutomaticCapture();
-
-
-
-
- 
-  
   }
   
   @Override
@@ -202,17 +196,6 @@ e.printStackTrace();
 
   drivetrain.tankDrive(0,0);
 
-
-
-
-
-
-  
- 
-
-
-
-
 }
 
 
@@ -237,23 +220,21 @@ this.setpoint = 0;
 
   @Override
   public void teleopPeriodic() {
+//solenoid controls left/right bumpers on xbox change firing directions
+if (xstick.getLeftBumperPressed()) {
+  solenoid.set(DoubleSolenoid.Value.kForward);
+} else if (xstick.getRightBumperPressed()) {
+  solenoid.set(DoubleSolenoid.Value.kReverse);
+}
+
 
 
 
 
 double driveSpeedScale = -0.9; // Change this value to adjust the drive speed scale
 
-
-
-
-
-
-
-
     double forwardSpeed = stick.getY();
     double turnSpeed = stick.getZ();
-
-
 
 
     // Scale the joystick values to reduce the robot's speed
