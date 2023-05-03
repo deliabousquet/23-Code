@@ -80,6 +80,9 @@ PIDController pid = new PIDController(0.01, 0, 0);
 int setpoint = 0;
 
 
+//pneumatics
+private final Compressor comp = new Compressor(null);
+private final DoubleSolenoid solenoid = new DoubleSolenoid(null, 0, 1);
 
 
 
