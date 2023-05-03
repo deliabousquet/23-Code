@@ -222,15 +222,20 @@ comp.stop();
 
   @Override
   public void teleopPeriodic() {
-//solenoid controls left/right bumpers on xbox change firing directions
+
+    //solenoid controls left/right bumpers on xbox change firing directions
 if (xstick.getLeftBumperPressed()) {
   solenoid.set(DoubleSolenoid.Value.kForward);
 } else if (xstick.getRightBumperPressed()) {
   solenoid.set(DoubleSolenoid.Value.kReverse);
 }
 
-
-
+//Compressor control with xstick paddles buuton 11 is left and 12 right
+if (xstick.getRawButton(11)) {
+  comp.start();
+} else if (xstick.getRawButton(12)){
+  comp.stop();
+}
 
 
 double driveSpeedScale = -0.9; // Change this value to adjust the drive speed scale
