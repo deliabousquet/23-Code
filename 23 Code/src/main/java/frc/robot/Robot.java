@@ -211,6 +211,8 @@ e.printStackTrace();
 
 this.encoder.reset();
 this.setpoint = 0;
+comp.stop();
+
 
 
   }
