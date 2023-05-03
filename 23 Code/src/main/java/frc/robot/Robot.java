@@ -59,21 +59,12 @@ public class Robot extends TimedRobot {
 
 
 
-
-
-
 //Speed Controller Group
 
   MotorControllerGroup leftSpeedGroup = new MotorControllerGroup(leftMotor1, leftMotor2);
   MotorControllerGroup rightSpeedGroup = new MotorControllerGroup(rightMotor1, rightMotor2);
 
-
-
-
   //drivetrain
-
-
-
 
   DifferentialDrive drivetrain = new DifferentialDrive(rightSpeedGroup, leftSpeedGroup);
   
@@ -83,15 +74,13 @@ public class Robot extends TimedRobot {
   private boolean buttonPressed;
 
 
-
-
-
-
-
-
+//PID+Encoder
 Encoder encoder = new Encoder(0,1);
 PIDController pid = new PIDController(0.01, 0, 0);
 int setpoint = 0;
+
+
+
 
 
 
