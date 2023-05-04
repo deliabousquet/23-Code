@@ -220,6 +220,8 @@ setpoint = 0;
   }
 }
 
+//get sensor position
+double sensorPosition = driveEncoder.get() *kDriveTick2Feet;
 
 
 
