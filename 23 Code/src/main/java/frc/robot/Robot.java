@@ -202,6 +202,8 @@ e.printStackTrace();
 
 
   driveEncoder.reset();
+  double setpoint = 0;
+
 
 }
 
@@ -210,8 +212,16 @@ e.printStackTrace();
   public void autonomousPeriodic() {
 
 
-
+    //joystick command to move 10 feet
+if (stick.getRawButton(1)) {
+setpoint = 10;
+}else if (stick.getRawButton(2)){
+setpoint = 0;
   }
+}
+
+
+
 
 
 
