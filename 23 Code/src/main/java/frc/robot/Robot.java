@@ -205,6 +205,8 @@ e.printStackTrace();
   double setpoint = 0;
 
 
+
+
 }
 
 
@@ -217,13 +219,21 @@ if (stick.getRawButton(1)) {
 setpoint = 10;
 }else if (stick.getRawButton(2)){
 setpoint = 0;
+
+
   }
 }
 
 //get sensor position
 double sensorPosition = driveEncoder.get() *kDriveTick2Feet;
 
+//PID Calculations
+double kP = 0.1;
+double error = setpoint - sensorPosition;
+double outputSpeed = kP *error;
 
+//Motor Output
+drivetrain.tankDrive(outputSpeed, outputSpeed +0.05);
 
 
 
