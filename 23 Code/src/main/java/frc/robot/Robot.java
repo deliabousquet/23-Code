@@ -200,11 +200,18 @@ e.printStackTrace();
 
   drivetrain.tankDrive(0,0);
 
+
+  driveEncoder.reset();
+
 }
 
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+
+
+
+  }
 
 
 
