@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.PIDController;
@@ -84,6 +85,9 @@ int setpoint = 0;
 private final Compressor comp = new Compressor(null);
 private final DoubleSolenoid solenoid = new DoubleSolenoid(null, 0, 1);
 
+//drive encoder
+private final Encoder driveEncoder = new Encoder(2,3,true,EncodingType.k4X );
+private final double kDriveTick2Feet = 1.0 / 128 *6 *Math.PI / 12;
 
 
 
