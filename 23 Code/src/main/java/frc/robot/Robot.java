@@ -25,6 +25,15 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.*;
+//new limelight imports -also uses smart dash
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
+
+
+
+
 
 
 
@@ -89,6 +98,7 @@ private final DoubleSolenoid solenoid = new DoubleSolenoid(null, 0, 1);
 private final Encoder driveEncoder = new Encoder(2,3,true,EncodingType.k4X );
 private final double kDriveTick2Feet = 1.0 / 128 *6 *Math.PI / 12;
 
+ 
 }
 
   @Override
@@ -96,6 +106,12 @@ private final double kDriveTick2Feet = 1.0 / 128 *6 *Math.PI / 12;
     
     buttonPressed = false;
     CameraServer.startAutomaticCapture();
+
+    //Limelight
+NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+NetworkTableEntry tx = table.getEntry("tx");
+NetworkTableEntry ty = table.getEntry("ty");
+NetworkTableEntry ta = table.getEntry("ta");
   }
   
 
