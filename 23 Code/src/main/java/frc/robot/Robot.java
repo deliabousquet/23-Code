@@ -98,6 +98,14 @@ private final DoubleSolenoid solenoid = new DoubleSolenoid(null, 0, 1);
 private final Encoder driveEncoder = new Encoder(2,3,true,EncodingType.k4X );
 private final double kDriveTick2Feet = 1.0 / 128 *6 *Math.PI / 12;
 
+//limelight
+NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+NetworkTableEntry tx = table.getEntry("tx");
+NetworkTableEntry ty = table.getEntry("ty");
+NetworkTableEntry ta = table.getEntry("ta");
+double targetArea = 5.0; //sets distance away from object/turn to 5 pixels -need to tune later
+PIDController turningController = new PIDController(0.1, 0, 0);
+PIDController movingController = new PIDController(0.1, 0, 0);
  
 }
 
@@ -107,11 +115,7 @@ private final double kDriveTick2Feet = 1.0 / 128 *6 *Math.PI / 12;
     buttonPressed = false;
     CameraServer.startAutomaticCapture();
 
-    //Limelight
-NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-NetworkTableEntry tx = table.getEntry("tx");
-NetworkTableEntry ty = table.getEntry("ty");
-NetworkTableEntry ta = table.getEntry("ta");
+
   }
   
 
@@ -120,8 +124,6 @@ NetworkTableEntry ta = table.getEntry("ta");
 SmartDashboard.putNumber("Encoder Value", encoder.get() * kDriveTick2Feet);
 
   }
-
-
 
 
   @Override
@@ -135,30 +137,6 @@ SmartDashboard.putNumber("Encoder Value", encoder.get() * kDriveTick2Feet);
 } catch (InterruptedException e) {
   e.printStackTrace();
 }
-
-//first go back
-drivetrain.tankDrive(0.5,0.55);
-try{
-Thread.sleep(3000);
-} catch (InterruptedException e) {
-e.printStackTrace();
-}
-
-//forwards
-drivetrain.tankDrive(-0.5,-0.55);
-try{
-  Thread.sleep(4000);
-} catch (InterruptedException e) {
-e.printStackTrace();
-}
-
-//back
-drivetrain.tankDrive(0.5,0.55);
-try{
-  Thread.sleep(4000);
-} catch (InterruptedException e) {
-e.printStackTrace();
-}
 //zero
 drivetrain.tankDrive(0,0);
 
@@ -166,7 +144,6 @@ drivetrain.tankDrive(0,0);
   driveEncoder.reset();
   double setpoint = 0;
 }
-
 
 
   @Override
@@ -205,6 +182,8 @@ drivetrain.tankDrive(leftDriveSpeed,rightDriveSpeed);
 this.encoder.reset();
 this.setpoint = 0;
 comp.disable();
+
+
 
   }
 
@@ -297,6 +276,25 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
       wristMotor.set(pid_loop_value);
       System.out.println("PID output =" + pid_loop_value);
       System.out.println("sensor=" + encoder.get());
+
+
+//Limelight values to drive
+    double x = tx.getDouble(0.0);
+    double y = ty.getDouble(0.0);
+    double area = ta.getDouble(0.0);
+
+    SmartDashboard.putNumber("LimelightX", x);
+    SmartDashboard.putNumber("LimelightY", y);
+    SmartDashboard.putNumber("LimelightArea", area);
+
+    double turningOutput = turningController.calculate(x);
+    double movingOutput = movingController.calculate(area - targetArea);
+
+    drivetrain.tankDrive(-turningOutput + movingOutput, turningOutput + movingOutput);
+}
+
+
+
     
 }
 
