@@ -7,10 +7,6 @@
 //test 3
 
 package frc.robot;
-
-
-
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -31,12 +27,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 
-
-
-
-
-
-
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -44,38 +34,23 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  * project.
  */
 public class Robot extends TimedRobot {
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   
-   *///right motors
+///right motors
  private final VictorSP rightMotor1 = new VictorSP(1);
  private final VictorSP rightMotor2 = new VictorSP(0);
-
-
-
   //left motors
   private final VictorSP leftMotor1 = new VictorSP(3);
   private final VictorSP leftMotor2 = new VictorSP(2);
-
-
-
-
- 
   //arm Controller Motor
   private final VictorSP elbowMotor = new VictorSP(4);
   private final VictorSP wristMotor = new VictorSP (6); 
   private final VictorSP clapMotor = new VictorSP(5);
 
 
-
 //Speed Controller Group
-
   MotorControllerGroup leftSpeedGroup = new MotorControllerGroup(leftMotor1, leftMotor2);
   MotorControllerGroup rightSpeedGroup = new MotorControllerGroup(rightMotor1, rightMotor2);
 
   //drivetrain
-
   DifferentialDrive drivetrain = new DifferentialDrive(rightSpeedGroup, leftSpeedGroup);
   
   //joystick
@@ -83,12 +58,10 @@ public class Robot extends TimedRobot {
   XboxController xstick = new XboxController(1);
   private boolean buttonPressed;
 
-
 //PID+Encoder
 Encoder encoder = new Encoder(0,1);
 PIDController pid = new PIDController(0.01, 0, 0);
 int setpoint = 0;
-
 
 //pneumatics
 private final Compressor comp = new Compressor(null);
@@ -107,9 +80,8 @@ double targetArea = 5.0; //sets distance away from object/turn to 5 pixels -need
 PIDController turningController = new PIDController(0.1, 0, 0);
 PIDController movingController = new PIDController(0.1, 0, 0);
  
-}
 
-  @Override
+ @Override
   public void robotInit() {
     
     buttonPressed = false;
@@ -173,6 +145,7 @@ double rightDriveSpeed = outputSpeed + 0.05;
 
 //Motor Output
 drivetrain.tankDrive(leftDriveSpeed,rightDriveSpeed);
+  }
 
 
   @Override
@@ -291,7 +264,7 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
     double movingOutput = movingController.calculate(area - targetArea);
 
     drivetrain.tankDrive(-turningOutput + movingOutput, turningOutput + movingOutput);
-}
+}}
 
 
 
