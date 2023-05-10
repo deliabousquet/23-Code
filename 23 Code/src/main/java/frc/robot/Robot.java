@@ -89,10 +89,7 @@ private final DoubleSolenoid solenoid = new DoubleSolenoid(null, 0, 1);
 private final Encoder driveEncoder = new Encoder(2,3,true,EncodingType.k4X );
 private final double kDriveTick2Feet = 1.0 / 128 *6 *Math.PI / 12;
 
-
-
-
-
+}
 
   @Override
   public void robotInit() {
@@ -101,113 +98,59 @@ private final double kDriveTick2Feet = 1.0 / 128 *6 *Math.PI / 12;
     CameraServer.startAutomaticCapture();
   }
   
+
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+SmartDashboard.putNumber("Encoder Value", encoder.get() * kDriveTick2Feet);
+
+  }
 
 
 
 
   @Override
   public void autonomousInit() {
-
-
-
-
   drivetrain.setSafetyEnabled(false); 
 
-
-
-
+  //first go forwards
   drivetrain.tankDrive(-0.5,-0.55);
   try{
-
-
-
-
-    //first go forwards
-
-
-
-
     Thread.sleep(2500);
 } catch (InterruptedException e) {
   e.printStackTrace();
-
-
 }
 
-
+//first go back
 drivetrain.tankDrive(0.5,0.55);
 try{
-
-
-
-
-  //first go back
-
-
-
-
-  Thread.sleep(3000);
+Thread.sleep(3000);
 } catch (InterruptedException e) {
 e.printStackTrace();
-
-
 }
 
-
+//forwards
 drivetrain.tankDrive(-0.5,-0.55);
 try{
-
-
-
-
-  //first go forwards
-
-
-
-
   Thread.sleep(4000);
 } catch (InterruptedException e) {
 e.printStackTrace();
-
-
 }
 
-
-
-
-
-
+//back
 drivetrain.tankDrive(0.5,0.55);
 try{
-
-
-
-
-  //first go back
-
-
-
-
   Thread.sleep(4000);
 } catch (InterruptedException e) {
 e.printStackTrace();
-
-
 }
+//zero
+drivetrain.tankDrive(0,0);
 
-
-  drivetrain.tankDrive(0,0);
-
-
+//set variables
   driveEncoder.reset();
   double setpoint = 0;
-
-
-
-
 }
+
 
 
   @Override
@@ -219,10 +162,11 @@ if (stick.getRawButton(1)) {
 setpoint = 10;
 }else if (stick.getRawButton(2)){
 setpoint = 0;
-
-
+double errorSum = 0;
+double lastTimeStamp = 0;
+lastTimeStamp = Timer.getFPGATimestamp();
   }
-}
+
 
 //get sensor position
 double sensorPosition = driveEncoder.get() *kDriveTick2Feet;
@@ -231,11 +175,11 @@ double sensorPosition = driveEncoder.get() *kDriveTick2Feet;
 double kP = 0.1;
 double error = setpoint - sensorPosition;
 double outputSpeed = kP *error;
+double leftDriveSpeed = outputSpeed;
+double rightDriveSpeed = outputSpeed + 0.05;
 
 //Motor Output
-drivetrain.tankDrive(outputSpeed, outputSpeed +0.05);
-
-
+drivetrain.tankDrive(leftDriveSpeed,rightDriveSpeed);
 
 
   @Override
@@ -244,32 +188,27 @@ drivetrain.tankDrive(outputSpeed, outputSpeed +0.05);
 
 this.encoder.reset();
 this.setpoint = 0;
-comp.stop();
-
-
+comp.disable();
 
   }
-
 
 
 
   @Override
   public void teleopPeriodic() {
 
-    //solenoid controls left/right bumpers on xbox change firing directions
-if (xstick.getLeftBumperPressed()) {
-  solenoid.set(DoubleSolenoid.Value.kForward);
-} else if (xstick.getRightBumperPressed()) {
-  solenoid.set(DoubleSolenoid.Value.kReverse);
-}
+      // solenoid controls left/right bumpers on xbox change firing directions
+    if (xstick.getLeftBumperPressed()) {
+      solenoid.set(DoubleSolenoid.Value.kForward);
+    } else if (xstick.getRightBumperPressed()) {
+      solenoid.set(DoubleSolenoid.Value.kReverse);
+    }
 
-//Compressor control with xstick paddles buuton 11 is left and 12 right
-if (xstick.getRawButton(11)) {
-  comp.start();
-} else if (xstick.getRawButton(12)){
-  comp.stop();
-}
-
+    // Compressor control with xstick paddles buuton 11 is left and 12 right
+    if (xstick.getRawButton(11)) {
+      comp.isEnabled();
+    } else if (xstick.getRawButton(12)) {
+      comp.disable();
 
 double driveSpeedScale = -0.9; // Change this value to adjust the drive speed scale
 
@@ -287,13 +226,7 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
     // Drive the robot using the scaled joystick values
     drivetrain.arcadeDrive(forwardSpeed, turnSpeed);
 
-
-
-
     Timer.delay(0.005); // Small delay to avoid overloading the driver station
-
-
-
 
     if (xstick.getRawButton(4)) {
       elbowMotor.set(0.40);
@@ -307,7 +240,6 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
 
 
 
-
     if (xstick.getRawButton(9)) {
       clapMotor.set(0.25);
     } else if (xstick.getRawButton(10)) {
@@ -318,7 +250,6 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
 
 
     if (xstick.getRawButton(7)){ //when button 7 is pushed revert back to old code
-      
       if (xstick.getRawButton(2)) {
         wristMotor.set(0.25);
       } else if (xstick.getRawButton(1)) {
@@ -326,7 +257,7 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
       } else {
         wristMotor.set(0.0);
       } 
-  
+  //test
     } else {
 
 
@@ -351,60 +282,14 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
       System.out.println("PID output =" + pid_loop_value);
       System.out.println("sensor=" + encoder.get());
     
-      
-    }
-
-
-    
-
-
-
-
 }
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
 
   @Override
   public void disabledInit() {}
-
-
-
-
   @Override
   public void disabledPeriodic() {}
-
-
-
-
   @Override
   public void testInit() {}
-
-
-
-
   @Override
   public void testPeriodic() {}
 
