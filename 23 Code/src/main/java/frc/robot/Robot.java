@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
@@ -34,25 +35,23 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  private MecanumDrive m_robotDrive;
 ///right motors
  private final VictorSP rightMotor1 = new VictorSP(1);
  private final VictorSP rightMotor2 = new VictorSP(0);
   //left motors
   private final VictorSP leftMotor1 = new VictorSP(3);
   private final VictorSP leftMotor2 = new VictorSP(2);
+
+//may need to invert right motors .setInverted(true);
+
   //arm Controller Motor
   private final VictorSP elbowMotor = new VictorSP(4);
   private final VictorSP wristMotor = new VictorSP (6); 
   private final VictorSP clapMotor = new VictorSP(5);
 
 
-//Speed Controller Group
-  MotorControllerGroup leftSpeedGroup = new MotorControllerGroup(leftMotor1, leftMotor2);
-  MotorControllerGroup rightSpeedGroup = new MotorControllerGroup(rightMotor1, rightMotor2);
-
-  //drivetrain
-  DifferentialDrive drivetrain = new DifferentialDrive(rightSpeedGroup, leftSpeedGroup);
-  
   //joystick
   Joystick stick =new Joystick(0);
   XboxController xstick = new XboxController(1);
@@ -86,7 +85,7 @@ PIDController movingController = new PIDController(0.1, 0, 0);
     
     buttonPressed = false;
     CameraServer.startAutomaticCapture();
-
+    m_robotDrive = new MecanumDrive(leftMotor2, leftMotor2, rightMotor1, rightMotor2);
 
   }
   
@@ -100,17 +99,7 @@ SmartDashboard.putNumber("Encoder Value", encoder.get() * kDriveTick2Feet);
 
   @Override
   public void autonomousInit() {
-  drivetrain.setSafetyEnabled(false); 
-
-  //first go forwards
-  drivetrain.tankDrive(-0.5,-0.55);
-  try{
-    Thread.sleep(2500);
-} catch (InterruptedException e) {
-  e.printStackTrace();
-}
-//zero
-drivetrain.tankDrive(0,0);
+  
 
 //set variables
   driveEncoder.reset();
@@ -140,11 +129,11 @@ double sensorPosition = driveEncoder.get() *kDriveTick2Feet;
 double kP = 0.1;
 double error = setpoint - sensorPosition;
 double outputSpeed = kP *error;
-double leftDriveSpeed = outputSpeed;
-double rightDriveSpeed = outputSpeed + 0.05;
+double driveSpeed = outputSpeed;
 
 //Motor Output
-drivetrain.tankDrive(leftDriveSpeed,rightDriveSpeed);
+m_robotDrive.driveCartesian(0, driveSpeed, 0);
+
   }
 
 
@@ -178,6 +167,7 @@ comp.disable();
     } else if (xstick.getRawButton(12)) {
       comp.disable();
 
+/* Can scale drive speed if needed
 double driveSpeedScale = -0.9; // Change this value to adjust the drive speed scale
 
     double forwardSpeed = stick.getY();
@@ -186,13 +176,13 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
 
     // Scale the joystick values to reduce the robot's speed
     forwardSpeed *= driveSpeedScale;
-    turnSpeed *= driveSpeedScale;
+    turnSpeed *= driveSpeedScale; */
 
 
 
 
     // Drive the robot using the scaled joystick values
-    drivetrain.arcadeDrive(forwardSpeed, turnSpeed);
+    m_robotDrive.driveCartesian(-stick.getY(), -stick.getX(), -stick.getZ());
 
     Timer.delay(0.005); // Small delay to avoid overloading the driver station
 
@@ -263,7 +253,10 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
     double turningOutput = turningController.calculate(x);
     double movingOutput = movingController.calculate(area - targetArea);
 
-    drivetrain.tankDrive(-turningOutput + movingOutput, turningOutput + movingOutput);
+    m_robotDrive.driveCartesian(-turningOutput + movingOutput, movingOutput, turningOutput + movingOutput);
+
+
+   
 }}
 
 
@@ -279,28 +272,6 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
   public void testInit() {}
   @Override
   public void testPeriodic() {}
-
-
-
-
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
 
   @Override
   public void simulationInit() {}
