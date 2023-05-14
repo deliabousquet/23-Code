@@ -8,11 +8,11 @@
 
 package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.RobotController; //old drive chain
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive; //old drive chain
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup; //old drive chain
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SerialPort; 
 import edu.wpi.first.wpilibj.*;
 //new limelight imports -also uses smart dash
 import edu.wpi.first.networktables.NetworkTable;
@@ -111,7 +111,7 @@ SmartDashboard.putNumber("Encoder Value", encoder.get() * kDriveTick2Feet);
   public void autonomousPeriodic() {
 
 
-    //joystick command to move 10 feet
+  //joystick command to move 10 feet
 if (stick.getRawButton(1)) {
 setpoint = 10;
 }else if (stick.getRawButton(2)){
@@ -145,8 +145,6 @@ this.encoder.reset();
 this.setpoint = 0;
 comp.disable();
 
-
-
   }
 
 
@@ -167,7 +165,7 @@ comp.disable();
     } else if (xstick.getRawButton(12)) {
       comp.disable();
 
-/* Can scale drive speed if needed
+/* Can scale drive speed if needed old drive chain code
 double driveSpeedScale = -0.9; // Change this value to adjust the drive speed scale
 
     double forwardSpeed = stick.getY();
@@ -272,18 +270,10 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
   public void testInit() {}
   @Override
   public void testPeriodic() {}
-
   @Override
   public void simulationInit() {}
-
-
-
-
   @Override
   public void simulationPeriodic() {}
-
-
-
 
   
 }
