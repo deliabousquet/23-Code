@@ -80,6 +80,12 @@ PIDController turningController = new PIDController(0.1, 0, 0);
 PIDController movingController = new PIDController(0.1, 0, 0);
  
 
+
+//auto buttons change auto movements
+  private DigitalInput button1 = new DigitalInput(1);
+  private DigitalInput button2 = new DigitalInput(2);
+  private DigitalInput button3 = new DigitalInput(3);
+
  @Override
   public void robotInit() {
     
@@ -94,47 +100,77 @@ PIDController movingController = new PIDController(0.1, 0, 0);
   public void robotPeriodic() {
 SmartDashboard.putNumber("Encoder Value", encoder.get() * kDriveTick2Feet);
 
-  }
+  
 
+  
+  }
 
   @Override
   public void autonomousInit() {
-  
-
 //set variables
   driveEncoder.reset();
   double setpoint = 0;
-}
+  
+
+
+    }
+  
 
 
   @Override
   public void autonomousPeriodic() {
 
-
-  //joystick command to move 10 feet
-if (stick.getRawButton(1)) {
-setpoint = 10;
-}else if (stick.getRawButton(2)){
-setpoint = 0;
-double errorSum = 0;
-double lastTimeStamp = 0;
-lastTimeStamp = Timer.getFPGATimestamp();
-  }
+    if(button1.get()) {
+      // Code to execute when button 1 is pressed
 
 
-//get sensor position
-double sensorPosition = driveEncoder.get() *kDriveTick2Feet;
 
-//PID Calculations
-double kP = 0.1;
-double error = setpoint - sensorPosition;
-double outputSpeed = kP *error;
-double driveSpeed = outputSpeed;
+ //joystick command to move 10 feet
+ if (stick.getRawButton(1)) {
+  setpoint = 10;
+  }else if (stick.getRawButton(2)){
+  setpoint = 0;
+  double errorSum = 0;
+  double lastTimeStamp = 0;
+  lastTimeStamp = Timer.getFPGATimestamp();
+    }
+  
+  
+  //get sensor position
+  double sensorPosition = driveEncoder.get() *kDriveTick2Feet;
+  
+  //PID Calculations
+  double kP = 0.1;
+  double error = setpoint - sensorPosition;
+  double outputSpeed = kP *error;
+  double driveSpeed = outputSpeed;
+  
+  //Motor Output
+  m_robotDrive.driveCartesian(0, driveSpeed, 0);
+  
 
-//Motor Output
-m_robotDrive.driveCartesian(0, driveSpeed, 0);
 
-  }
+      }
+      else{}
+      if (button2.get()){
+        // Code to execute when button 1 is pressed
+      }
+      else{}
+      if(button3.get()) {
+        // Code to execute when button 1 is pressed
+      }
+        else{}
+
+
+
+
+
+
+ 
+
+}
+
+  
 
 
   @Override
