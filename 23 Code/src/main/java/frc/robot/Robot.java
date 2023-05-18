@@ -7,25 +7,23 @@
 //test 3
 
 package frc.robot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotController; //old drive chain
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive; //old drive chain
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup; //old drive chain
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.SerialPort; 
+//old drive chain
 import edu.wpi.first.wpilibj.*;
 //new limelight imports -also uses smart dash
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+//ARHS
+import com.kauailabs.navx.frc.AHRS;
+        
 
 
 /**
@@ -78,14 +76,17 @@ NetworkTableEntry ta = table.getEntry("ta");
 double targetArea = 5.0; //sets distance away from object/turn to 5 pixels -need to tune later
 PIDController turningController = new PIDController(0.1, 0, 0);
 PIDController movingController = new PIDController(0.1, 0, 0);
- 
 
+//AHRS
+AHRS ahrs = new AHRS(SPI.Port.kMXP); 
 
 //auto buttons change auto movements
   private DigitalInput button1 = new DigitalInput(1);
   private DigitalInput button2 = new DigitalInput(2);
   private DigitalInput button3 = new DigitalInput(3);
 
+
+  //------------------------------------------------------------------------------------------------------
  @Override
   public void robotInit() {
     
@@ -95,35 +96,33 @@ PIDController movingController = new PIDController(0.1, 0, 0);
 
   }
   
-
+//----------------------------------------------------------------------------------------------------------
   @Override
   public void robotPeriodic() {
 SmartDashboard.putNumber("Encoder Value", encoder.get() * kDriveTick2Feet);
 
   
-
   
   }
+  //------------------------------------------------------------------------------------------------------
 
   @Override
   public void autonomousInit() {
 //set variables
   driveEncoder.reset();
-  double setpoint = 0;
+
+  ahrs.reset();
+  setpoint = 0;
   
-
-
     }
   
 
-
+//-------------------------------------------------------------------------------------------------------
   @Override
   public void autonomousPeriodic() {
 
     if(button1.get()) {
       // Code to execute when button 1 is pressed
-
-
 
  //joystick command to move 10 feet
  if (stick.getRawButton(1)) {
@@ -146,7 +145,7 @@ SmartDashboard.putNumber("Encoder Value", encoder.get() * kDriveTick2Feet);
   double driveSpeed = outputSpeed;
   
   //Motor Output
-  m_robotDrive.driveCartesian(0, driveSpeed, 0);
+  m_robotDrive.driveCartesian(driveSpeed, 0, 0);
   
 
 
@@ -161,13 +160,17 @@ SmartDashboard.putNumber("Encoder Value", encoder.get() * kDriveTick2Feet);
       }
         else{}
 
+//Auto balance
+      
+        double angle = ahrs.getPitch(); // Get the robot's pitch angle from the NavX sensor
 
+        // Calculate the error between the current angle and the setpoint
+        double error = setpoint - angle;
 
-
-
-
- 
-
+        // Calculate the PID output using the proportional, integral, and derivative gains and drive
+        double output = 0.01 * error + 0 * ahrs.getRawAccelY() + 0 * ahrs.getRawAccelZ();
+        m_robotDrive.driveCartesian(output, 0, 0);
+        
 }
 
   
@@ -313,3 +316,5 @@ double driveSpeedScale = -0.9; // Change this value to adjust the drive speed sc
 
   
 }
+
+
